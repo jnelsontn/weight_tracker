@@ -1,7 +1,7 @@
 import sqlite3
-from datetime import datetime, date
+from datetime import date
 
-class Startup:
+class Functions:
 
     def check_for_database(self):
 
@@ -44,6 +44,14 @@ class Startup:
                 (None, name, initial_weight, creation_date))
 
             conn.commit()
+
+    def list_users(self):
+        '''list all users in the system'''
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+
+            c.execute('''SELECT Id, Name FROM USERS''')
+            return c.fetchall()
 
     def weigh_in(self, current_user, weight):
         '''
@@ -126,13 +134,4 @@ class Startup:
 
             # print('Your initial weight was {}, your previous weight was {}, your current weight is {}'.format(
             #     init_prev_cur_weight[0], init_prev_cur_weight[1], init_prev_cur_weight[2]))
-
-if __name__ == '__main__':
-    app = Startup()
-    app.check_for_database()
-    # app.create_user('Aldona', '209')
-    # app.weigh_in(1, 208)
-    x = app.user_weight_history(2)
-    # x = app.compare_previous_and_current_weigh_in(2)
-    print(x)
 
