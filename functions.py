@@ -81,13 +81,58 @@ class Startup:
                 WHERE UserId = {}'''.format(
                     current_user))
 
-            return c.fetchall()
+            results = c.fetchall()
+
+            if len(results) > 0:
+                return results
+            else:
+                return None
 
     def compare_previous_and_current_weigh_in(self, current_user):
-        '''compare previous weigh in to the current weigh in'''
-        pass
+        '''Retrieve user's initial weight'''
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+            current_date = date.today()
 
+            try:
+                c.execute('''SELECT Initial_Weight
+                    FROM Users
+                    WHERE Id = {}'''.format(
+                        current_user))
 
+                initial_weight = c.fetchone()[0]
 
+                '''Retrieve the user's previous and current
+                weight'''
+                c.execute('''
+                    SELECT WeightOnDate FROM WeightChart
+                    WHERE UserId = {}
+                    ORDER BY DateOfWeighIn DESC
+                    LIMIT 2
+                    '''.format(
+                        current_user))
 
+                current_and_previous_weight = c.fetchall()
+
+                previous_weight = current_and_previous_weight[1][0]
+                current_weight = current_and_previous_weight[0][0]
+
+                init_prev_cur_weight = [initial_weight, previous_weight, current_weight]
+
+                return init_prev_cur_weight
+
+            except TypeError:
+                pass
+
+            # print('Your initial weight was {}, your previous weight was {}, your current weight is {}'.format(
+            #     init_prev_cur_weight[0], init_prev_cur_weight[1], init_prev_cur_weight[2]))
+
+if __name__ == '__main__':
+    app = Startup()
+    app.check_for_database()
+    # app.create_user('Aldona', '209')
+    # app.weigh_in(1, 208)
+    x = app.user_weight_history(2)
+    # x = app.compare_previous_and_current_weigh_in(2)
+    print(x)
 
