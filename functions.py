@@ -1,0 +1,93 @@
+import sqlite3
+from datetime import datetime, date
+
+class Startup:
+
+    def check_for_database(self):
+
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+
+        try:
+            c.execute('''CREATE TABLE Users
+                (
+                Id INTEGER PRIMARY KEY,
+                Name VARCHAR(20) NOT NULL,
+                Initial_Weight INTEGER NOT NULL,
+                Created_At DATE
+                )
+                ''')
+
+            c.execute('''CREATE TABLE WeightChart
+                (
+                Id INTEGER PRIMARY KEY,
+                UserId INTEGER,
+                WeightOnDate INTEGER NOT NULL,
+                DateOfWeighIn DATE,
+
+                FOREIGN KEY(UserId) REFERENCES Users(Id)
+                )
+                ''')
+
+            conn.commit()
+
+        except:
+            print('database already exists')
+
+    def create_user(self, name, initial_weight):
+
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+            creation_date = date.today()
+
+            c.execute('INSERT INTO Users VALUES (?, ?, ?, ?)',
+                (None, name, initial_weight, creation_date))
+
+            conn.commit()
+
+    def weigh_in(self, current_user, weight):
+        '''
+        user weights in for a current date
+        only allows one weigh in per day
+        '''
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+            current_date = date.today()
+
+            try:
+                c.execute('''
+                    SELECT UserId FROM WeightChart
+                    WHERE UserId = {}
+                    AND DateOfWeighIn = "{}"
+                    '''.format(
+                        current_user, current_date))
+
+                if not c.fetchone():
+                    raise
+                else:
+                    print('Already weighed in today')
+
+            except:
+                c.execute('INSERT INTO WeightChart VALUES (?, ?, ?, ?)',
+                    (None, current_user, weight, current_date))              
+
+    def user_weight_history(self, current_user):
+        '''list a history of the user's weight'''
+        with sqlite3.connect('db.db') as conn:
+            c = conn.cursor()
+
+            c.execute('''SELECT DateOfWeighIn, WeightOnDate
+                FROM WeightChart
+                WHERE UserId = {}'''.format(
+                    current_user))
+
+            return c.fetchall()
+
+    def compare_previous_and_current_weigh_in(self, current_user):
+        '''compare previous weigh in to the current weigh in'''
+        pass
+
+
+
+
+
