@@ -80,10 +80,10 @@ def weight_history_cli():
         if weight_history is not None:
             for date, weight in weight_history:
                 print('date: ' + str(date) + ' weight: ' + str(weight))
-            input('-> press return go back to the main menu')
+            input('-> press return to go back to the main menu')
         else:
-            print('User has no weight history\n')
-            input('-> press return go back to the main menu')
+            print('User has no history\n')
+            input('-> press return to go back to the main menu')
 
     except sqlite3.OperationalError:
         print('Select a user.')
