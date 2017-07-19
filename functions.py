@@ -73,11 +73,11 @@ def weigh_in(current_user, weight):
             if not c.fetchone():
                 raise
             else:
-                print('Already weighed in today')
+                print('User already weighed in today')
 
         except:
             c.execute('INSERT INTO WeightChart VALUES (?, ?, ?, ?)',
-                (None, current_user, weight, current_date))              
+                (None, current_user, weight, current_date))          
 
 def user_weight_history(current_user):
     '''list a history of the user's weight'''
@@ -131,7 +131,4 @@ def compare_previous_and_current_weigh_in(current_user):
 
         except TypeError:
             pass
-
-            # print('Your initial weight was {}, your previous weight was {}, your current weight is {}'.format(
-            #     init_prev_cur_weight[0], init_prev_cur_weight[1], init_prev_cur_weight[2]))
 
