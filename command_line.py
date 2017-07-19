@@ -29,9 +29,13 @@ def choose_active_user_cli():
     '''ensure we have no active users'''
     deactivate_active_user()
 
-    print('Who are you?\n')
-
     users = list_users()
+
+    if len(users) <= 0:
+        print('No Users. Create a user.')
+        return
+
+    print('Choose active user.\n')
 
     i = 1
     for index in range(len(users)):
@@ -57,7 +61,7 @@ def weigh_in_cli():
 
         try:
             results = compare_previous_and_current_weigh_in(active_user)
-            print('Your initial weight was {}, your previous weight was {}, your current weight is {}.'.format(
+            print('initial: {}, previous: {}, current: {}.'.format(
                 results[0], results[1], results[2]))
         except:
             pass
