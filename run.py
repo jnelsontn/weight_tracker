@@ -3,9 +3,9 @@ from command_line import *
 
 def build_menu():
     print('1. Create User')
-    print('2. Choose Active User')
+    print('2. Set Active User')
     print('3. Weigh In')
-    print('4. User Weight History')
+    print('4. Weight History')
     print('5. Quit')
 
 def check_db():
