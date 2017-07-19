@@ -31,8 +31,9 @@ def choose_active_user_cli():
 
     users = list_users()
 
-    if len(users) <= 0:
+    if len(users) < 1:
         print('No Users. Create a user.')
+        input('-> press return to go back to the main menu')
         return
 
     print('Choose active user.\n')
@@ -67,28 +68,33 @@ def weigh_in_cli():
             pass
 
     else:
-        print('Select a user.')
-        choose_active_user_cli()
-        weigh_in_cli()
+        print('Set a user active.')
+        input('-> press return to go back to the main menu')
 
 def weight_history_cli():
     global active_user
 
-    try:
-        weight_history = user_weight_history(active_user)
+    if active_user:
 
-        if weight_history is not None:
-            for date, weight in weight_history:
-                print('date: ' + str(date) + ' weight: ' + str(weight))
-            input('-> press return to go back to the main menu')
-        else:
-            print('User has no history\n')
-            input('-> press return to go back to the main menu')
+        try:
+            weight_history = user_weight_history(active_user)
 
-    except sqlite3.OperationalError:
-        print('Select a user.')
-        choose_active_user_cli()
-        weight_history_cli()
+            if weight_history is not None:
+                for date, weight in weight_history:
+                    print('date: ' + str(date) + ' weight: ' + str(weight))
+                input('-> press return to go back to the main menu')
+            else:
+                print('User has no history')
+                input('-> press return to go back to the main menu')
+
+        except sqlite3.OperationalError:
+            print('Select a user.')
+            choose_active_user_cli()
+            weight_history_cli()
+
+    else:
+        print('Set a user active.')
+        input('-> press return to go back to the main menu')
 
 
 
